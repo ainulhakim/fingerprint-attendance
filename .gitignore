@@ -1,0 +1,10 @@
+# Git ignore
+__pycache__/
+*.pyc
+.env
+venv/
+*.log
+attendance_*.csv
+new_data.csv
+users.json
+gspread_credentials.json
