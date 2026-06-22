@@ -2,48 +2,46 @@
 
 Auto-pull data absensi dari fingerprint device (Solution X606-S / X105) dan upload ke Google Sheets.
 
-## Cara Setup
+## Cara Kerja
+
+1. Cek tanggal terakhir data di spreadsheet
+2. Pull data dari fingerprint device
+3. Filter: hanya ambil data dari tanggal terakhir sampai hari ini
+4. Skip data yang sudah ada (anti-duplikat)
+5. Upload data baru ke Google Sheets
+
+## Setup
 
 ### 1. Install dependencies
 ```bash
-pip install pyzk gspread google-auth google-auth-oauthlib
+pip install -r requirements.txt
 ```
 
-### 2. Siapkan Environment Variables
-```bash
-export FINGERPRINT_IP="10.10.10.31"
-export FINGERPRINT_PORT="4370"
-export FINGERPRINT_PASSWORD="0"
-export FINGERPRINT_UDP="false"
-export SHEET_ID="your_google_sheet_id"
-export WEB_APP_URL="your_apps_script_web_app_url"
-```
+### 2. Edit Config
+Edit `fingerprint_pull.py`, sesuaikan:
+- `FINGERPRINT_IP` - IP fingerprint device
+- `SHEET_ID` - Google Sheets ID
+- `WEB_APP_URL` - Google Apps Script Web App URL
 
 ### 3. Setup Google Apps Script
 - Buat project di https://script.google.com/
+- Copy isi `gas_webapp.js`
 - Deploy sebagai Web App (Anyone can access)
-- Pastikan script mendukung `valueInputOption: 'RAW'` untuk format TEXT
 
-### 4. Setup Cron (Linux)
+### 4. Setup Cron
 ```bash
 # Setiap hari jam 09:00, 11:00, 20:00
 0 9,11,20 * * * cd /path/to/app && /path/to/venv/bin/python3 fingerprint_pull.py
 ```
 
+Atau jalankan:
+```bash
+bash cron_setup.sh
+```
+
 ## Struktur Data
 
-Kolom spreadsheet:
 | NO | PIN | TANGGAL | JAM | STATUS | BULAN | TAHUN |
 |----|-----|---------|-----|--------|-------|-------|
 
-Semua kolom B-G dalam format **TEXT**.
-
-## File
-
-| File | Deskripsi |
-|------|-----------|
-| `fingerprint_pull.py` | Script utama pull & upload |
-| `.env.example` | Contoh konfigurasi |
-| `requirements.txt` | Python dependencies |
-| `gas_webapp.js` | Google Apps Script (Web App) |
-| `cron_setup.sh` | Setup cron job otomatis |
+Kolom B-G format **TEXT**.
